@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stored Data</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container data-container">
+
+    <h2>📊 User Behaviour Dataset</h2>
+
+    <div class="table-wrapper">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Typing Speed</th>
+                <th>Mouse Speed</th>
+                <th>IP</th>
+                <th>Device</th>
+            </tr>
+
+            {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.typing_speed }}</td>
+                <td>{{ user.mouse_speed }}</td>
+                <td>{{ user.ip_address }}</td>
+
+                <!-- SCROLL FIX -->
+                <td class="device-cell">
+                    <div class="device-scroll">
+                        {{ user.device_info }}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

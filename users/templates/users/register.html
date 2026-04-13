@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body class="register-page">
+
+<div class="container">
+
+    <h2>Secure Registration</h2>
+
+    <form method="POST" action="/register/" id="registerForm">
+        {% csrf_token %}
+
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="email" name="email" placeholder="Email Address" required>
+
+        <textarea id="sentence" name="sentence" placeholder="Type a sentence..." required></textarea>
+
+        <input type="hidden" name="typing_speed" id="typing_speed">
+        <input type="hidden" name="mouse_speed" id="mouse_speed">
+        <input type="hidden" name="device_info" id="device_info">
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p class="small-text">Your behaviour is securely analyzed 🔒</p>
+
+</div>
+
+<script>
+
+// ------------------ TYPING (FIXED) ------------------
+const textarea = document.getElementById("sentence");
+const form = document.getElementById("registerForm");
+
+let startTime = null;
+
+// ⏱ Start timer on first typing
+textarea.addEventListener("input", () => {
+    if (!startTime && textarea.value.length === 1) {
+        startTime = new Date().getTime();
+    }
+});
+
+// ✅ Calculate on form submit
+form.addEventListener("submit", () => {
+
+    let endTime = new Date().getTime();
+
+    if (!startTime) {
+        document.getElementById("typing_speed").value = 0;
+        return;
+    }
+
+    let timeTaken = (endTime - startTime) / 1000; // seconds
+    let minutes = timeTaken / 60;
+
+    let charCount = textarea.value.length;
+
+    // 🚀 Accurate WPM
+    let wpm = 0;
+    if (minutes > 0) {
+        wpm = Math.round((charCount / 5) / minutes);
+    }
+
+    document.getElementById("typing_speed").value = wpm;
+});
+
+
+// ------------------ MOUSE (UNCHANGED) ------------------
+let lastX, lastY, lastTime;
+let totalDistance = 0, totalTime = 0;
+
+document.addEventListener("mousemove", (e) => {
+    let now = new Date().getTime();
+
+    if (lastX !== undefined) {
+        let dx = e.clientX - lastX;
+        let dy = e.clientY - lastY;
+        totalDistance += Math.sqrt(dx*dx + dy*dy);
+        totalTime += (now - lastTime);
+    }
+
+    lastX = e.clientX;
+    lastY = e.clientY;
+    lastTime = now;
+
+    document.getElementById("mouse_speed").value = totalTime > 0 ? (totalDistance / totalTime) : 0;
+});
+
+
+// ------------------ DEVICE ------------------
+document.getElementById("device_info").value = navigator.userAgent;
+
+</script>
+
+</body>
+</html>
+
